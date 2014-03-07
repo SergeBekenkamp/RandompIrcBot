@@ -21,11 +21,14 @@ import org.jibble.pircbot.PircBot;
 
 public class Bot extends PircBot {
 
+	private String[] channels = null;
+	
 	public Bot(String name, String server) {
 		connect(name, server, new String[0]);
 	}
 
 	public Bot(String name, String server, String[] channels) {
+		this.channels = channels;
 		connect(name, server, channels);
 	}
 
@@ -55,10 +58,10 @@ public class Bot extends PircBot {
 
 	public void onMessage(String channel, String sender, String login, String hostname, String message) {
 		switch (message.toLowerCase()) {
-			case ".!help":
+			case "!help":
 				help(channel);
 				break;
-			case ".!latest":
+			case "!latest":
 				this.sendMessage(channel, "Newest submission on the subreddit is: " + Main.latestSubmission);
 				
 			default:
@@ -69,6 +72,12 @@ public class Bot extends PircBot {
 
 	public void help(String channel) {
 		this.sendMessage(channel, "This bot currently does nothing");
+	}
+	
+	public void sendMessageToChannels(String message){
+		for(String t : channels){
+			this.sendMessage(t, message);
+		}
 	}
 	
 
