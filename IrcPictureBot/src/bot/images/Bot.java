@@ -54,27 +54,50 @@ public class Bot extends PircBot {
 	}
 
 	public void onMessage(String channel, String sender, String login, String hostname, String message) {
-		history.get(channel).add(sender + " " + message);
-		String message2 = message.split(" ")[0];
-		if (message2.startsWith(Main.prefix)) {
-			message2 = message2.substring(2, message2.length());
-			switch (message2.toLowerCase()) {
-				case "help":
-					help(channel);
-					break;
-				case "latest":
-					this.sendMessage(channel, "Newest submission on the subreddit is: " + Main.latestSubmission);
-					break;
-				case "up":
-					sendServerIsUp(channel);
-					break;
-				case "history":
-					sendHistory(sender, channel);
-					break;
-				default:
-					break;
+		if (Main.prefixUser.get(sender) != null) {
+			System.out.println(Main.prefixUser.get(sender));
+			if (message.startsWith(Main.prefixUser.get(sender))) {
+				message = message.substring(Main.prefixUser.get(sender).length());
+				System.out.println(message);
+				messageLogic(channel, sender, login, hostname, message.split(" "));
 			}
+		} else if (message.startsWith(Main.prefix)) {
+			message = message.substring(Main.prefix.length());
+			System.out.println(message);
+			messageLogic(channel, sender, login, hostname, message.split(" "));
+		} else {
+			history.get(channel).add(sender + " " + message);
 		}
+	}
+
+	public void messageLogic(String channel, String sender, String login, String hostname, String[] message) {
+		for (String t : message) {
+			System.out.println(t);
+		}
+		switch (message[0].toLowerCase()) {
+			case "help":
+				help(channel);
+				break;
+			case "latest":
+				this.sendMessage(channel, "Newest submission on the subreddit is: " + Main.latestSubmission);
+				break;
+			case "up":
+				sendServerIsUp(channel);
+				break;
+			case "history":
+				sendHistory(sender, channel);
+				break;
+			case "prefix":
+				changePrefix(sender, message[1]);
+				break;
+			default:
+				break;
+		}
+	}
+
+	public void changePrefix(String sender, String prefix) {
+		Main.prefixUser.remove(sender);
+		Main.prefixUser.put(sender, prefix);
 	}
 
 	public void help(String channel) {
@@ -98,8 +121,9 @@ public class Bot extends PircBot {
 	public void sendHistory(String user, String channel) {
 		ArrayList<String> his = history.get(channel);
 		for (int i = his.size() - 10; i < his.size(); i++) {
-			if (i < 0) i = 0;
-				this.sendMessage(user, his.get(i));
+			if (i < 0)
+				i = 0;
+			this.sendMessage(user, his.get(i));
 		}
 	}
 
