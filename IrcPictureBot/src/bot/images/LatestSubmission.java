@@ -8,8 +8,8 @@ import com.omrlnr.jreddit.Submissions;
 import com.omrlnr.jreddit.User;
 
 public class LatestSubmission extends TimerTask {
-		String username     = "swordplay";
-        String password     = "egres899";
+		String username     = "";
+        String password     = "";
         String subreddit    = "TestDocPleaseIgnore";
         Bot bot = null;
     public LatestSubmission(Bot bot){
