@@ -31,8 +31,7 @@ public class LatestSubmission extends TimerTask {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		
+
 	}
 
 }
